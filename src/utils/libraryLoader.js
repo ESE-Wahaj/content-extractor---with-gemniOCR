@@ -1,0 +1,45 @@
+const CDN_URLS = {
+  PDFJS: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+  PDFJS_WORKER: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
+  MAMMOTH: 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js',
+  TESSERACT: 'https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js'
+};
+
+const loadedLibraries = new Set();
+
+const loadScript = (url, checkGlobal) => {
+  return new Promise((resolve, reject) => {
+    if (loadedLibraries.has(url)) {
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = url;
+    script.onload = () => {
+      loadedLibraries.add(url);
+      resolve();
+    };
+    script.onerror = () => reject(new Error(`Failed to load script: ${url}`));
+    document.head.appendChild(script);
+  });
+};
+
+export const loadPdfJs = async () => {
+  if (!window.pdfjsLib) {
+    await loadScript(CDN_URLS.PDFJS);
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = CDN_URLS.PDFJS_WORKER;
+  }
+};
+
+export const loadMammoth = async () => {
+  if (!window.mammoth) {
+    await loadScript(CDN_URLS.MAMMOTH);
+  }
+};
+
+export const loadTesseract = async () => {
+  // Tesseract is no longer used for image extraction, but we keep this function 
+  // to avoid breaking other files that might import it. It will no-op.
+  console.warn('Tesseract is deprecated for image extraction. Using Gemini API instead.');
+};
