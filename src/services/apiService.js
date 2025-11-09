@@ -1,8 +1,9 @@
 import { readFileAsArrayBuffer, arrayBufferToBase64 } from '../utils/fileHelpers.js';
 
 // Gemini API Configuration
-// const GEMINI_API_KEY = ""; 
-const GEMINI_API_KEY = typeof window.__api_key !== 'undefined' ? window.__api_key : "";
+const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY; 
+console.log("Using Gemini API Key:", GEMINI_API_KEY );
+// const GEMINI_API_KEY = typeof window.__api_key !== 'undefined' ? window.__api_key : "";
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_API_KEY}`;
 const MAX_RETRIES = 5;
 
